@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import { AsyncStorage } from "@react-native-async-storage/async-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
 import "core-js/stable/atob";
 
@@ -32,19 +32,17 @@ const AuthProvider = ({ children }) => {
     isLoggedIn();
   }, [token]);
   return (
-    <AuthContext
+    <AuthContext.Provider
       value={{
         token,
         isLoading,
         setToken,
         userId,
         setUserId,
-        upcomingGames,
-        setUpcomingGames,
       }}
     >
       {children}
-    </AuthContext>
+    </AuthContext.Provider>
   );
 };
 export { AuthContext, AuthProvider };
