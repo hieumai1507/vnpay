@@ -1,39 +1,53 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import React from "react";
+import "@/global.css";
+import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import TabLayout from "./(tabs)/_layout";
+import Verify from "./(routes)/verify";
+import { PhoneProvider } from "@/components/PhoneContext";
+import QR from "./(tabs)/QR";
+import Register from "./(routes)/register";
+import Password from "./(routes)/password";
+import PhoneNum from "./(routes)/PhoneNum";
+import PreFinal from "./(routes)/PreFinal";
 
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
-
+const Stack = createNativeStackNavigator();
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
+  const RootLayoutNav = () => {
+    return (
+      <GluestackUIProvider mode="light">
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false,
+          }}
+        >
+          <Stack.Screen name="Main" component={TabLayout} />
+          <Stack.Screen name="QRCode" component={QR} />
+        </Stack.Navigator>
+      </GluestackUIProvider>
+    );
+  };
+  const AuthStack = () => {
+    return (
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        <Stack.Screen name="Register" component={Register} />
+        <Stack.Screen name="Password" component={Password} />
+        <Stack.Screen name="PhoneNum" component={PhoneNum} />
+        <Stack.Screen name="Verify" component={Verify} />
+        <Stack.Screen name="PreFinal" component={PreFinal} />
+      </Stack.Navigator>
+    );
+  };
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <GluestackUIProvider mode="light">
+      <PhoneProvider>
+        <AuthStack />
+      </PhoneProvider>
+    </GluestackUIProvider>
   );
 }
